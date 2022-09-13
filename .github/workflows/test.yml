@@ -1,0 +1,56 @@
+name: test
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v3
+      - name: 日本語フォントをインストール
+        run: sudo apt-get install -y fonts-ipafont fonts-ipaexfont
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - run: npm ci
+      - name: スクリーンショットを保存
+        run: npm run screenshot
+      - name: レポートを作成
+        id: report_gen
+        run: npm run report-gen
+      - name: fixtures、gh-pagesブランチを更新
+        if: failure() && steps.report_gen.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # fixturesフォルダを更新
+          npm run update-fixtures
+
+          # fixturesブランチにコミット＆プッシュ
+          git --version
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git branch -a
+          git checkout -b fixtures
+          git add cypress\fixtures\**.png
+          git commit -a -m "Update fixtures"
+          git push --force --set-upstream origin fixtures
+          
+          # PR作成
+          $result = gh pr list -B 'main' -H 'fixtures'
+            if ($result -eq $null){
+            gh pr create -B "main" -H "fixtures" -t "fixturesフォルダを更新" -b "比較レポートはこちら\nhttps://t-fujisaka-d1g.github.io/demo-visual-regression-testing/"
+          }
+          
+          # レポートをgh-pagesブランチにコミット
+          git branch -a
+          git checkout -b gh-pages
+          git add docs
+          git commit -a -m "gh-pages"
+          git push --force --set-upstream origin gh-pages  

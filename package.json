@@ -1,0 +1,34 @@
+{
+  "name": "demo-visual-regression-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "open": "cypress open",
+    "screenshot": "cypress run --e2e --browser chrome",
+    "update-fixtures": "cpx -C 'cypress/screenshots/**' 'cypress/fixtures'",
+    "report-gen": "cpx -C 'cypress/fixtures/**' 'docs/before' && cpx -C 'cypress/screenshots/**' 'docs/after' && reg-cli ./docs/after ./docs/before ./docs/diff -R ./docs/index.html -J ./docs/reg.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/t-fujisaka-d1g/demo-visual-regression-testing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/t-fujisaka-d1g/demo-visual-regression-testing/issues"
+  },
+  "homepage": "https://github.com/t-fujisaka-d1g/demo-visual-regression-testing#readme",
+  "volta": {
+    "node": "16.17.0"
+  },
+  "dependencies": {
+    "cpx": "^1.5.0",
+    "cypress": "^10.7.0",
+    "npm-run-all": "^4.1.5",
+    "reg-cli": "^0.17.7"
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1"
+  }
+}
