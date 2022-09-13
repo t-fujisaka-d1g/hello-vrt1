@@ -1,0 +1,1 @@
+{"failedItems":["00001.png","ドル円.png"],"newItems":[],"deletedItems":[],"passedItems":[],"expectedItems":["00001.png","ドル円.png"],"actualItems":["00001.png","ドル円.png"],"diffItems":["00001.png","ドル円.png"],"actualDir":"./after","expectedDir":"./before","diffDir":"./diff"}
